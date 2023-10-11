@@ -34,7 +34,7 @@ class RemoteFeedLoaderTest: XCTestCase {
     func test_load_deliversErrorOnClientError() {
         let info = getLoaderAndClient()
         
-        expect(info.loader, toCompleteWith: .failure(.connectivity)) {
+        expect(info.loader, toCompleteWith: .failure(RemoteFeedLoader.Error.connectivity)) {
             let clientError = NSError(domain: "Test", code: 0)
             info.client.complete(with: clientError)
         }
@@ -45,7 +45,7 @@ class RemoteFeedLoaderTest: XCTestCase {
 
         let samples = [199, 201, 300, 400, 500]
         samples.enumerated().forEach { index, code in
-            expect(info.loader, toCompleteWith: .failure(.invalidData)) {
+            expect(info.loader, toCompleteWith: .failure(RemoteFeedLoader.Error.invalidData)) {
                 let json = makeItemsJSON([])
                 info.client.complete(withStatusCode: code, data: json, at: index)
             }
@@ -54,7 +54,7 @@ class RemoteFeedLoaderTest: XCTestCase {
 
     func test_load_deliversErrorOn200HTTPResponseWithInvalidJSON() {
         let info = getLoaderAndClient()
-        expect(info.loader, toCompleteWith: .failure(.invalidData)) {
+        expect(info.loader, toCompleteWith: .failure(RemoteFeedLoader.Error.invalidData)) {
             let invalidJSON = Data("invalid json".utf8)
             info.client.complete(withStatusCode: 200, data: invalidJSON)
         }
@@ -107,17 +107,28 @@ class RemoteFeedLoaderTest: XCTestCase {
     }
     
     private func expect(_ loader: RemoteFeedLoader,
-                        toCompleteWith result: RemoteFeedLoader.Result,
+                        toCompleteWith expectedResult: RemoteFeedLoader.Result,
                         with action: () -> Void,
                         file: StaticString = #filePath,
                         line: UInt = #line) {
         
-        var capturedResults = [RemoteFeedLoader.Result]()
-        loader.load { capturedResults.append($0) }
+        let exp = expectation(description: "Wait for load completion")
+        loader.load { recievedResult in
+            switch (recievedResult, expectedResult) {
+            case let (.success(receivedItems), .success(expectedItems)):
+                XCTAssertEqual(receivedItems, expectedItems, file: file, line: line)
+            case let (.failure(receivedError as RemoteFeedLoader.Error), .failure(expectedError as RemoteFeedLoader.Error)):
+                XCTAssertEqual(receivedError, expectedError, file: file, line: line)
+            default:
+                XCTFail("Expected result \(expectedResult) got \(recievedResult)", file: file, line: line)
+            }
+            
+            exp.fulfill()
+        }
         
         action()
         
-        XCTAssertEqual(capturedResults, [result], file: file, line: line)
+        wait(for: [exp], timeout: 1.0)
     }
     
     private func getLoaderAndClient(url: URL = URL(string: "www.onliner.by")!,
