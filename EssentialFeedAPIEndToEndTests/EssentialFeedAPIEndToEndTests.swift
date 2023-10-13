@@ -9,7 +9,7 @@ import XCTest
 import EssentialFeed
 
 class EssentialFeedAPIEndToEndTests: XCTestCase {
-    
+        
     func test_entToEndTestServerGETFeedResult_matcehsFixedTestAccData() {
         switch getFeedResult() {
         case .success(let array):
@@ -33,7 +33,7 @@ class EssentialFeedAPIEndToEndTests: XCTestCase {
     
     private func getFeedResult(file: StaticString = #filePath, line: UInt = #line) -> LoadFeedResult? {
         let url = URL(string: "https://essentialdeveloper.com/feed-case-study/test-api/feed")!
-        let client = URLSessionHTTPClient()
+        let client = URLSessionHTTPClient(session: URLSession(configuration: .ephemeral))
         let loader = RemoteFeedLoader(client: client, url: url)
         checkForMemoryLeaks(client, file: file, line: line)
         checkForMemoryLeaks(loader, file: file, line: line)
