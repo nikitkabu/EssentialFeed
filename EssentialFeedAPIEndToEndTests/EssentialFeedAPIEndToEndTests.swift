@@ -12,17 +12,17 @@ class EssentialFeedAPIEndToEndTests: XCTestCase {
         
     func test_entToEndTestServerGETFeedResult_matcehsFixedTestAccData() {
         switch getFeedResult() {
-        case .success(let array):
-            XCTAssertEqual(array.count, 8, "Expected 8 items in the test acc")
+        case .success(let imageFeed):
+            XCTAssertEqual(imageFeed.count, 8, "Expected 8 images in the test acc")
             
-            XCTAssertEqual(array[0], expectedItem(at: 0))
-            XCTAssertEqual(array[1], expectedItem(at: 1))
-            XCTAssertEqual(array[2], expectedItem(at: 2))
-            XCTAssertEqual(array[3], expectedItem(at: 3))
-            XCTAssertEqual(array[4], expectedItem(at: 4))
-            XCTAssertEqual(array[5], expectedItem(at: 5))
-            XCTAssertEqual(array[6], expectedItem(at: 6))
-            XCTAssertEqual(array[7], expectedItem(at: 7))
+            XCTAssertEqual(imageFeed[0], expectedImage(at: 0))
+            XCTAssertEqual(imageFeed[1], expectedImage(at: 1))
+            XCTAssertEqual(imageFeed[2], expectedImage(at: 2))
+            XCTAssertEqual(imageFeed[3], expectedImage(at: 3))
+            XCTAssertEqual(imageFeed[4], expectedImage(at: 4))
+            XCTAssertEqual(imageFeed[5], expectedImage(at: 5))
+            XCTAssertEqual(imageFeed[6], expectedImage(at: 6))
+            XCTAssertEqual(imageFeed[7], expectedImage(at: 7))
             
         case .failure(let error):
             XCTFail("Should be success, but received \(error)")
@@ -50,11 +50,11 @@ class EssentialFeedAPIEndToEndTests: XCTestCase {
         return receivedResult
     }
     
-    private func expectedItem(at index: Int) -> FeedItem {
-        return FeedItem(id: id(at: index),
+    private func expectedImage(at index: Int) -> FeedImage {
+        return FeedImage(id: id(at: index),
                         description: description(at: index),
                         location: location(at: index),
-                        imageURL: imageURL(at: index))
+                        url: imageURL(at: index))
     }
     
     private func id(at index: Int) -> UUID {
