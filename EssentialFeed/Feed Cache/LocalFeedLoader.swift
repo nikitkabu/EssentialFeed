@@ -37,6 +37,13 @@ public final class LocalFeedLoader {
             completion(insertionError)
         }
     }
+    
+    public func load(completion: @escaping (Error?) -> Void) {
+        store.retrieve { [weak self] retrieveError in
+            guard self != nil else { return }
+            completion(retrieveError)
+        }
+    }
 }
 
 private extension Array where Element == FeedImage {
