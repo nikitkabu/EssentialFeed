@@ -90,7 +90,7 @@ class URLSessionHTTPClientTest: XCTestCase {
                               file: StaticString = #filePath, line: UInt = #line) -> (data: Data, response: HTTPURLResponse)? {
         let result = resultFor(data: data, response: response, error: error)
         switch result {
-        case .success((let data, let response)):
+        case .success(let data, let response):
             return (data, response)
         default:
             XCTFail("Expected failure, got \(result) instead", file: file, line: line)
@@ -121,9 +121,7 @@ class URLSessionHTTPClientTest: XCTestCase {
         return client
     }
 
-    private func anyURL() -> URL { URL(string: "www.onliner.by")! }
     private func anyData() -> Data { Data("Any data".utf8) }
-    private func anyNSError() -> NSError { NSError(domain: "Any error", code: 0) }
     private func nonHTTPURLResponse() -> URLResponse { URLResponse(url: anyURL(), mimeType: nil, expectedContentLength: 0, textEncodingName: nil) }
     private func anyHTTPURLResponse() -> HTTPURLResponse? { HTTPURLResponse(url: anyURL(), statusCode: 0, httpVersion: nil, headerFields: nil) }
 
