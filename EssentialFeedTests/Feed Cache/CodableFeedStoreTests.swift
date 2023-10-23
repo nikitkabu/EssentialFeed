@@ -61,15 +61,15 @@ class CodableFeedStore {
 }
 
 final class CodableFeedStoreTests: XCTestCase {
-
+    
     override func setUp() {
         super.setUp()
-        try? FileManager.default.removeItem(at: testSpecificStoreURL())
+        setupEmptyStoreState()
     }
     
     override func tearDown() {
         super.tearDown()
-        try? FileManager.default.removeItem(at: testSpecificStoreURL())
+        undoStoreSideEffects()
     }
 
     func test_retrieve_delieversEmptyOnEmptyCache() {
@@ -137,6 +137,37 @@ final class CodableFeedStoreTests: XCTestCase {
         wait(for: [ext], timeout: 1.0)
     }
 
+    func test_retrieve_hasNoSideEffectsOnNonEmptyCache() {
+        let sut = makeSUT()
+        let feed = uniqueImageFeed().local
+        let timestamp = Date()
+        
+        let ext = expectation(description: "Waiting for completion")
+        sut.insert(feed, timestamp: timestamp) { insertionError in
+            XCTAssertNil(insertionError, "Expected feed to be inserted successfully")
+            
+            sut.retrieve { firstResult in
+                sut.retrieve { secondResult in
+                    
+                    switch (firstResult, secondResult) {
+                    case (.found(let firstFeed, let firstTimestamp), .found(let secondFeed, let secondTimestamp)):
+                        XCTAssertEqual(firstFeed, feed)
+                        XCTAssertEqual(firstTimestamp, timestamp)
+                        
+                        XCTAssertEqual(secondFeed, feed)
+                        XCTAssertEqual(secondTimestamp, timestamp)
+                    default:
+                        XCTFail("Expected found result with \(feed) and timestamp \(timestamp), but got \(firstResult) and \(secondResult) instead")
+                    }
+                    
+                    ext.fulfill()
+                }
+            }
+        }
+        
+        wait(for: [ext], timeout: 1.0)
+    }
+
     //MARK: - Helpers
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> CodableFeedStore {
         let sut = CodableFeedStore(storeURL: testSpecificStoreURL())
@@ -146,5 +177,17 @@ final class CodableFeedStoreTests: XCTestCase {
     
     private func testSpecificStoreURL() -> URL {
         FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.appending(path: "\(type(of: self)).store")
+    }
+    
+    private func setupEmptyStoreState() {
+        deleteStoreArtifacts()
+    }
+
+    private func undoStoreSideEffects() {
+        deleteStoreArtifacts()
+    }
+    
+    private func deleteStoreArtifacts() {
+        try? FileManager.default.removeItem(at: testSpecificStoreURL())
     }
 }
