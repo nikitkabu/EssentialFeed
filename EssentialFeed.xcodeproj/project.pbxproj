@@ -34,6 +34,7 @@
 		E7DB134F2AD81433000C255D /* EssentialFeed.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7637FAB2AD3EA0C000F2622 /* EssentialFeed.framework */; };
 		E7DB13552AD81909000C255D /* XCTestCase+MemoryLeakTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = E776C1912AD71DA1004CD826 /* XCTestCase+MemoryLeakTracking.swift */; };
 		E7DB135C2AD95AF7000C255D /* CacheFeedUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7DB135B2AD95AF7000C255D /* CacheFeedUseCaseTests.swift */; };
+		E7FD32EB2AE673C200D8615B /* CodableFeedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7FD32EA2AE673C200D8615B /* CodableFeedStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +84,7 @@
 		E7DB13562AD81B2F000C255D /* CI.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = CI.xctestplan; sourceTree = "<group>"; };
 		E7DB13572AD852DA000C255D /* EssentialFeed.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = EssentialFeed.xctestplan; sourceTree = "<group>"; };
 		E7DB135B2AD95AF7000C255D /* CacheFeedUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheFeedUseCaseTests.swift; sourceTree = "<group>"; };
+		E7FD32EA2AE673C200D8615B /* CodableFeedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableFeedStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +119,7 @@
 			children = (
 				E703E6AD2ADDBB73008F02A1 /* LocalFeedLoader.swift */,
 				E703E6AF2ADDBBD5008F02A1 /* FeedStore.swift */,
+				E7FD32EA2AE673C200D8615B /* CodableFeedStore.swift */,
 				E703E6B32ADDC47D008F02A1 /* LocalFeedImage.swift */,
 				E703E6C72AE05B02008F02A1 /* FeedCachePolicy.swift */,
 			);
@@ -373,6 +376,7 @@
 				E703E6BB2ADEBD44008F02A1 /* HTTPClient.swift in Sources */,
 				E703E6B22ADDC466008F02A1 /* RemoteFeedItem.swift in Sources */,
 				E7637FC62AD3EA1C000F2622 /* FeedImage.swift in Sources */,
+				E7FD32EB2AE673C200D8615B /* CodableFeedStore.swift in Sources */,
 				E703E6C82AE05B02008F02A1 /* FeedCachePolicy.swift in Sources */,
 				E703E6AE2ADDBB73008F02A1 /* LocalFeedLoader.swift in Sources */,
 				E703E6BD2ADEBDA4008F02A1 /* FeedItemMapper.swift in Sources */,
