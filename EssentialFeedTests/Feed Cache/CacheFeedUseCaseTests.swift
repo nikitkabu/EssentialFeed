@@ -115,8 +115,13 @@ final class CacheFeedUseCaseTests: XCTestCase {
                         line: UInt = #line) {
         var receivedError: Error?
         let exp = expectation(description: "Waiting for the block")
-        loader.save(uniqueImageFeed().models) { error in
-            receivedError = error
+        loader.save(uniqueImageFeed().models) { saveResult in
+            switch saveResult {
+            case .success:
+                receivedError = nil
+            case .failure(let error):
+                receivedError = error
+            }
             exp.fulfill()
         }
         

@@ -19,42 +19,33 @@ public final class CoreDataFeedStore: FeedStore {
     
     public func retrieve(completion: @escaping RetrieveCompletion) {
         perform { context in            
-            do {
+            completion(Result {
                 if let cache = try ManagedCache.find(in: context), let timestamp = cache.timestamp {
-                    completion(.found(feed: cache.localFeed, timestamp: timestamp))
+                    return CacheFeed(feed: cache.localFeed, timestamp: timestamp)
                 } else {
-                    completion(.empty)
+                    return .none
                 }
-            } catch {
-                completion(.empty)
-            }
+            })
         }
     }
     
     public func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
         perform { context in
-            do {
+            completion(Result {
                 let managedCache = try ManagedCache.newUniqueInstance(in: context)
                 managedCache.timestamp = timestamp
                 managedCache.feed = ManagedFeedImage.images(from: feed, in: context)
                 
                 try context.save()
-                completion(nil)
-            } catch {
-                completion(error)
-            }
+            })
         }
     }
     
     public func deleteCachedFeed(completion: @escaping DeletionCompletion) {
         perform { context in
-            do {
-                try ManagedCache.find(in: context).map({context.delete($0)})
-                try context.save()
-                completion(nil)
-            } catch {
-                completion(error)
-            }
+            completion(Result {
+                try ManagedCache.find(in: context).map(context.delete).map(context.save)
+            })
         }
     }
     
@@ -72,7 +63,8 @@ private extension ManagedCache {
     }
     
     static func newUniqueInstance(in context: NSManagedObjectContext) throws -> ManagedCache {
-        try find(in: context).map({context.delete($0)})
+        try find(in: context).map({ context.delete($0) })
+        try context.save()
         return ManagedCache(context: context)
     }
 
