@@ -5,6 +5,7 @@
 //  Created by Nikita Vishnevsky on 07.11.2023.
 //
 
+import Foundation
 import EssentialFeed
 
 struct FeedLoadingViewModel {
@@ -26,6 +27,11 @@ protocol FeedView {
 final class FeedPresenter {
     private let feedView: FeedView
     private let loadingView: FeedLoadingView
+    
+    static var title: String { NSLocalizedString("FEED_VIEW_TITLE",
+                                                 tableName: "Feed",
+                                                 bundle: Bundle(for: FeedPresenter.self),
+                                                 comment: "") }
     
     init(feedView: FeedView, loadingView: FeedLoadingView) {
         self.feedView = feedView
